@@ -114,6 +114,10 @@ class AuthorizeNetAdapter(object):
         try:
             request = self.context.REQUEST
             options['customer_ip'] = request.get('HTTP_X_FORWARDED_FOR') or request.get('REMOTE_ADDR')
+            # There may be multiple forwarding addresses, split them and take
+            # the first one
+            if options['customer_ip'] and ',' in options['customer_ip']:
+                options['customer_ip'] = [i.strip() for i in options['customer_ip'].split(',')][0]
         except AttributeError:
             pass
 
